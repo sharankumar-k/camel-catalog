@@ -19,6 +19,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.logging.Logger;
 
 public class GenerateCommand implements Runnable {
@@ -94,7 +95,7 @@ public class GenerateCommand implements Runnable {
 
                     CatalogDefinition catalogDefinition = catalogGenerator.generate();
                     if (catalogDefinition == null) {
-                        throw new RuntimeException("Catalog generation returned no result for "
+                        throw new IllegalStateException("Catalog generation returned no result for "
                                 + catalogCliArg.getRuntime() + " " + downloadVersion);
                     }
 
@@ -125,7 +126,7 @@ public class GenerateCommand implements Runnable {
         try {
             Util.createTabWriter(jsonMapper).writeValue(indexFile, library);
         } catch (IOException e) {
-            throw new RuntimeException("Error writing index file", e);
+            throw new UncheckedIOException("Error writing index file", e);
         }
     }
 

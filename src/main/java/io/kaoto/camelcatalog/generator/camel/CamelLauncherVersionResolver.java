@@ -21,6 +21,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import io.kaoto.camelcatalog.model.CatalogRuntime;
 import org.apache.commons.io.IOUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -212,7 +213,7 @@ public class CamelLauncherVersionResolver {
     /**
      * Fetches available versions from the Maven repository's maven-metadata.xml
      */
-    private List<String> fetchAvailableVersions(String repository) throws Exception {
+    private List<String> fetchAvailableVersions(String repository) throws IOException {
         String metadataUrl = String.format("%s/%s/%s/maven-metadata.xml", 
                                           repository, CAMEL_LAUNCHER_GROUP_PATH, CAMEL_LAUNCHER_ARTIFACT);
         
@@ -233,7 +234,7 @@ public class CamelLauncherVersionResolver {
             return versionList;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Failed to parse maven-metadata.xml from: " + metadataUrl, e);
-            throw e;
+            throw new IOException("Failed to fetch or parse maven-metadata.xml from: " + metadataUrl, e);
         }
     }
     
